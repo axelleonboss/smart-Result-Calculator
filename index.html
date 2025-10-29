@@ -185,22 +185,27 @@
 </div>
 
 <!-- 🌍 MAIN APP -->
-<header>
-  Smart Result Calculator
-  <bu<div style="text-align:center; margin-top:20px;">
+<header style="text-align:center; margin-top:20px;">
+  <h1>Smart Result Calculator</h1>
+
+  <button id="backHomeBtn" 
+    onclick="goHome()" 
+    style="background-color:#f0c808; color:#001f3f; border:none; padding:12px 25px; border-radius:25px; font-weight:bold; cursor:pointer; margin:5px;">
+    🏠 Home
+  </button>
+
   <button onclick="window.location.href='about.html'" 
-  style="background-color:#f0c808; color:#001f3f; border:none; padding:12px 25px; border-radius:25px; font-weight:bold; cursor:pointer; margin:5px;">
-  ℹ️ About
+    style="background-color:#f0c808; color:#001f3f; border:none; padding:12px 25px; border-radius:25px; font-weight:bold; cursor:pointer; margin:5px;">
+    ℹ️ About
   </button>
 
   <button onclick="window.location.href='contact.html'" 
-  style="background-color:#f0c808; color:#001f3f; border:none; padding:12px 25px; border-radius:25px; font-weight:bold; cursor:pointer; margin:5px;">
-  📞 Contact
+    style="background-color:#f0c808; color:#001f3f; border:none; padding:12px 25px; border-radius:25px; font-weight:bold; cursor:pointer; margin:5px;">
+    📞 Contact
   </button>
-</div>
-tton id="backHomeBtn" onclick="goHome()">🏠 Home</button>
- 
 </header>
+
+  
 
 <main id="mainApp" class="hidden">
   <div id="unlockProDiv" class="info">

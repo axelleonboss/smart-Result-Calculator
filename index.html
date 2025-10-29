@@ -6,13 +6,15 @@
 <title>Smart Result Calculator</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
 <style>
   * { box-sizing: border-box; }
   body {
     font-family: "Poppins", Arial, sans-serif;
     background-color: #000814;
     color: #f0c808;
-    margin: 0; padding: 0;
+    margin: 0;
+    padding: 0;
     overflow-x: hidden;
   }
 
@@ -65,6 +67,7 @@
     border: none; margin-top: 5px;
     background: #222; color: #f0c808;
   }
+
   button {
     background-color: #f0c808; color: #001f3f;
     padding: 10px 20px; border: none;
@@ -76,6 +79,7 @@
     background-color: #ffd700;
     transform: scale(1.05);
   }
+
   table {
     width: 100%; border-collapse: collapse; margin-top: 15px;
   }
@@ -84,12 +88,14 @@
     padding: 8px; text-align: center;
   }
   th { background-color: #001f3f; }
+
   .comment-section { margin-top: 20px; }
   textarea {
     width: 100%; min-height: 80px; padding: 10px;
     border-radius: 5px; border: none; resize: vertical;
     background: #222; color: #f0c808;
   }
+
   small { color: #aaa; }
   .hidden { display: none; }
   .info {
@@ -111,9 +117,11 @@
     animation: fadeIn 1.5s ease-in-out;
     overflow: hidden;
   }
+
   #introPage.hidden {
     opacity: 0; visibility: hidden;
   }
+
   #introVideo {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -121,6 +129,7 @@
     z-index: -1;
     filter: brightness(0.45);
   }
+
   @keyframes fadeIn {
     from { opacity: 0; transform: scale(0.95); }
     to { opacity: 1; transform: scale(1); }
@@ -135,10 +144,12 @@
     box-shadow: 0 0 30px #f0c80888;
     animation: glowPulse 2s infinite alternate;
   }
+
   @keyframes glowPulse {
     from { box-shadow: 0 0 10px #f0c80855; transform: scale(1); }
     to { box-shadow: 0 0 30px #f0c808; transform: scale(1.05); }
   }
+
   #introPage h1 {
     font-size: 2.5em; color: #f0c808;
     text-shadow: 0 0 15px #f0c808; margin-top: 20px;
@@ -171,7 +182,7 @@
 <!-- 🌊 INTRO PAGE -->
 <div id="introPage">
   <video autoplay muted loop playsinline id="introVideo">
-    <source src="https://cdn.coverr.co/videos/coverr-flowing-river-6747/1080p.mp4" type="video/mp4">
+    <source src="https://videos.pexels.com/video-files/856185/856185-hd_1920_1080_30fps.mp4" type="video/mp4">
   </video>
   <div class="logo">📘</div>
   <h1>Smart Result Calculator</h1>
@@ -185,29 +196,15 @@
 </div>
 
 <!-- 🌍 MAIN APP -->
-<header style="text-align:center; margin-top:20px;">
-  <h1>Smart Result Calculator</h1>
-
-  <button id="backHomeBtn" 
-    onclick="goHome()" 
-    style="background-color:#f0c808; color:#001f3f; border:none; padding:12px 25px; border-radius:25px; font-weight:bold; cursor:pointer; margin:5px;">
-    🏠 Home
-  </button>
-
-  <button onclick="window.location.href='about.html'" 
-    style="background-color:#f0c808; color:#001f3f; border:none; padding:12px 25px; border-radius:25px; font-weight:bold; cursor:pointer; margin:5px;">
-    ℹ️ About
-  </button>
-
-  <button onclick="window.location.href='contact.html'" 
-    style="background-color:#f0c808; color:#001f3f; border:none; padding:12px 25px; border-radius:25px; font-weight:bold; cursor:pointer; margin:5px;">
-    📞 Contact
-  </button>
+<header>
+  Smart Result Calculator
+  <button id="backHomeBtn" onclick="goHome()">🏠 Home</button>
+  <button onclick="window.location.href='about.html'">ℹ️ About</button>
+  <button onclick="window.location.href='contact.html'">📞 Contact</button>
 </header>
 
-  
-
 <main id="mainApp" class="hidden">
+  <!-- Unlock Section -->
   <div id="unlockProDiv" class="info">
     <label>Enter Pro Unlock Code:</label>
     <input type="text" id="unlockCode" placeholder="Enter code to unlock Pro features" />
@@ -215,6 +212,7 @@
     <p id="unlockMessage"></p>
   </div>
 
+  <!-- Student Info -->
   <div class="student-info">
     <h3>🧒 Student Information</h3>
     <label>Name:</label>
@@ -225,6 +223,7 @@
     <input type="text" id="studentTerm" placeholder="e.g. 1st Term 2025">
   </div>
 
+  <!-- Subjects Table -->
   <div id="subjectSection">
     <h3>📘 Subjects</h3>
     <table id="subjectTable">
@@ -244,6 +243,7 @@
     <button onclick="calculateResult()">Calculate</button>
   </div>
 
+  <!-- Result Section -->
   <div id="outputSection" class="hidden">
     <h3>📊 Result Summary</h3>
     <p id="averageDisplay"></p>
@@ -266,17 +266,13 @@ let freeUses = 3;
 let subjectCount = 0;
 
 function startApp() {
-  const intro = document.getElementById("introPage");
-  intro.classList.add("hidden");
-  setTimeout(() => {
-    document.getElementById("mainApp").classList.remove("hidden");
-  }, 1000);
+  document.getElementById("introPage").classList.add("hidden");
+  setTimeout(() => document.getElementById("mainApp").classList.remove("hidden"), 1000);
 }
 
 function goHome() {
   document.getElementById("mainApp").classList.add("hidden");
-  const intro = document.getElementById("introPage");
-  intro.classList.remove("hidden");
+  document.getElementById("introPage").classList.remove("hidden");
 }
 
 function unlockPro() {
@@ -323,15 +319,11 @@ function calculateResult() {
   const rows = document.querySelectorAll("#tableBody tr");
   if (rows.length === 0) return alert("Add at least one subject.");
 
-  let totalScore = 0;
-  let subjectTotal = 0;
+  let totalScore = 0, subjectTotal = 0;
 
   rows.forEach(r => {
     const inputs = r.querySelectorAll("input");
-    const homework = parseFloat(inputs[1].value) || 0;
-    const test = parseFloat(inputs[2].value) || 0;
-    const exam = parseFloat(inputs[3].value) || 0;
-    const total = homework * 0.2 + test * 0.3 + exam * 0.5;
+    const total = (parseFloat(inputs[1].value)||0)*0.2 + (parseFloat(inputs[2].value)||0)*0.3 + (parseFloat(inputs[3].value)||0)*0.5;
     const grade = getGrade(total);
     r.querySelector(".totalCell").textContent = total.toFixed(2);
     r.querySelector(".gradeCell").textContent = grade;

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Result Calculator</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Poppins", Arial, sans-serif;
+    background-color: #000814;
+    color: #f0c808;
+    margin: 0; padding: 0;
+    overflow-x: hidden;
+  }
+
+  /* 🌊 Header */
+  header {
+    background-color: #001f3f;
+    padding: 15px;
+    text-align: center;
+    color: #f0c808;
+    font-size: 1.7em;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px #f0c808;
+    position: relative;
+  }
+
+  /* 🏠 Back to Home button */
+  #backHomeBtn {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    background-color: #f0c808;
+    color: #001f3f;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 15px #f0c80855;
+    transition: all 0.3s ease;
+  }
+  #backHomeBtn:hover {
+    background-color: #ffd700;
+    box-shadow: 0 0 25px #f0c808aa;
+    transform: scale(1.05);
+  }
+
+  main {
+    max-width: 900px;
+    margin: 20px auto;
+    background: #111;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px #f0c80855;
+  }
+
+  label { display: block; margin-top: 10px; }
+  input[type="text"], input[type="number"] {
+    width: 100%; padding: 8px; border-radius: 5px;
+    border: none; margin-top: 5px;
+    background: #222; color: #f0c808;
+  }
+  button {
+    background-color: #f0c808; color: #001f3f;
+    padding: 10px 20px; border: none;
+    border-radius: 8px; font-weight: bold;
+    margin: 10px 5px 0 0; cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  button:hover {
+    background-color: #ffd700;
+    transform: scale(1.05);
+  }
+  table {
+    width: 100%; border-collapse: collapse; margin-top: 15px;
+  }
+  th, td {
+    border: 1px solid #f0c808;
+    padding: 8px; text-align: center;
+  }
+  th { background-color: #001f3f; }
+  .comment-section { margin-top: 20px; }
+  textarea {
+    width: 100%; min-height: 80px; padding: 10px;
+    border-radius: 5px; border: none; resize: vertical;
+    background: #222; color: #f0c808;
+  }
+  small { color: #aaa; }
+  .hidden { display: none; }
+  .info {
+    background-color: #001f3f; padding: 10px;
+    border-radius: 6px; margin-bottom: 10px;
+  }
+
+  /* 🌊 INTRO PAGE */
+  #introPage {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    color: #f0c808;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    z-index: 1000;
+    transition: opacity 1s ease, visibility 1s ease;
+    animation: fadeIn 1.5s ease-in-out;
+    overflow: hidden;
+  }
+  #introPage.hidden {
+    opacity: 0; visibility: hidden;
+  }
+  #introVideo {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    filter: brightness(0.45);
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .logo {
+    width: 120px; height: 120px;
+    background: linear-gradient(135deg, #f0c808, #ffd700);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3em; color: #001f3f;
+    box-shadow: 0 0 30px #f0c80888;
+    animation: glowPulse 2s infinite alternate;
+  }
+  @keyframes glowPulse {
+    from { box-shadow: 0 0 10px #f0c80855; transform: scale(1); }
+    to { box-shadow: 0 0 30px #f0c808; transform: scale(1.05); }
+  }
+  #introPage h1 {
+    font-size: 2.5em; color: #f0c808;
+    text-shadow: 0 0 15px #f0c808; margin-top: 20px;
+  }
+  #introPage p {
+    color: #eee; margin: 10px 0; font-size: 1.2em;
+  }
+  #introPage ul {
+    list-style: none; padding: 0; text-align: left;
+    margin-top: 10px; font-size: 1em;
+    background: rgba(0,0,0,0.3); border-radius: 8px;
+    padding: 10px 20px;
+  }
+  #introPage li::before { content: "✨ "; color: #f0c808; }
+  #introPage button {
+    margin-top: 25px;
+    background-color: #f0c808; color: #001f3f;
+    font-size: 1.2em; border-radius: 30px;
+    padding: 12px 30px;
+    box-shadow: 0 0 20px #f0c80855;
+  }
+  #introPage button:hover {
+    background-color: #ffd700;
+    box-shadow: 0 0 30px #f0c808aa;
+  }
+</style>
+</head>
+<body>
+
+<!-- 🌊 INTRO PAGE -->
+<div id="introPage">
+  <video autoplay muted loop playsinline id="introVideo">
+    <source src="https://cdn.coverr.co/videos/coverr-flowing-river-6747/1080p.mp4" type="video/mp4">
+  </video>
+  <div class="logo">📘</div>
+  <h1>Smart Result Calculator</h1>
+  <p>Fast • Simple • Accurate • Professional</p>
+  <ul>
+    <li>📚 Calculates Homework, Test & Exam Results</li>
+    <li>🧠 Provides Auto Grades & Teacher Comments</li>
+    <li>📄 Export Results to PDF (Pro Version)</li>
+  </ul>
+  <button onclick="startApp()">🚀 Get Started</button>
+</div>
+
+<!-- 🌍 MAIN APP -->
+<header>
+  Smart Result Calculator
+  <button id="backHomeBtn" onclick="goHome()">🏠 Home</button>
+</header>
+
+<main id="mainApp" class="hidden">
+  <div id="unlockProDiv" class="info">
+    <label>Enter Pro Unlock Code:</label>
+    <input type="text" id="unlockCode" placeholder="Enter code to unlock Pro features" />
+    <button onclick="unlockPro()">Unlock</button>
+    <p id="unlockMessage"></p>
+  </div>
+
+  <div class="student-info">
+    <h3>🧒 Student Information</h3>
+    <label>Name:</label>
+    <input type="text" id="studentName" placeholder="Enter student's full name" required>
+    <label>Class:</label>
+    <input type="text" id="studentClass" placeholder="e.g. JSS 2 or Grade 5">
+    <label>Term / Session:</label>
+    <input type="text" id="studentTerm" placeholder="e.g. 1st Term 2025">
+  </div>
+
+  <div id="subjectSection">
+    <h3>📘 Subjects</h3>
+    <table id="subjectTable">
+      <thead>
+        <tr>
+          <th>Subject</th>
+          <th>Homework (20%)</th>
+          <th>Test (30%)</th>
+          <th>Exam (50%)</th>
+          <th>Total %</th>
+          <th>Grade</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <button onclick="addSubject()">+ Add Subject</button>
+    <button onclick="calculateResult()">Calculate</button>
+  </div>
+
+  <div id="outputSection" class="hidden">
+    <h3>📊 Result Summary</h3>
+    <p id="averageDisplay"></p>
+    <p id="gradeDisplay"></p>
+    <p id="autoComment"></p>
+
+    <div class="comment-section">
+      <label for="teacherComment">✍️ Enter your own comment (optional):</label>
+      <textarea id="teacherComment" maxlength="3000" placeholder="Type your comment..."></textarea>
+      <small id="charCount">0 / 3000</small>
+    </div>
+
+    <button id="exportBtn" class="hidden" onclick="exportPDF()">📄 Export PDF</button>
+  </div>
+</main>
+
+<script>
+let isPro = false;
+let freeUses = 3;
+let subjectCount = 0;
+
+function startApp() {
+  const intro = document.getElementById("introPage");
+  intro.classList.add("hidden");
+  setTimeout(() => {
+    document.getElementById("mainApp").classList.remove("hidden");
+  }, 1000);
+}
+
+function goHome() {
+  document.getElementById("mainApp").classList.add("hidden");
+  const intro = document.getElementById("introPage");
+  intro.classList.remove("hidden");
+}
+
+function unlockPro() {
+  const code = document.getElementById("unlockCode").value.trim();
+  const msg = document.getElementById("unlockMessage");
+  if (code === "Chinedu2020@@") {
+    isPro = true;
+    msg.textContent = "✅ Pro version unlocked!";
+    msg.style.color = "lightgreen";
+    document.getElementById("exportBtn").classList.remove("hidden");
+  } else {
+    msg.textContent = "❌ Invalid code.";
+    msg.style.color = "red";
+  }
+}
+
+function addSubject() {
+  if (!isPro && subjectCount >= 5) {
+    alert("Free version limited to 5 subjects. Unlock Pro for more.");
+    return;
+  }
+  const tbody = document.getElementById("tableBody");
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td><input type="text" placeholder="Subject name"></td>
+    <td><input type="number" min="0" max="100"></td>
+    <td><input type="number" min="0" max="100"></td>
+    <td><input type="number" min="0" max="100"></td>
+    <td class="totalCell"></td>
+    <td class="gradeCell"></td>`;
+  tbody.appendChild(row);
+  subjectCount++;
+}
+
+function calculateResult() {
+  if (!isPro) {
+    if (freeUses <= 0) {
+      alert("Free limit reached. Please wait 24 hours or unlock Pro.");
+      return;
+    }
+    freeUses--;
+  }
+
+  const rows = document.querySelectorAll("#tableBody tr");
+  if (rows.length === 0) return alert("Add at least one subject.");
+
+  let totalScore = 0;
+  let subjectTotal = 0;
+
+  rows.forEach(r => {
+    const inputs = r.querySelectorAll("input");
+    const homework = parseFloat(inputs[1].value) || 0;
+    const test = parseFloat(inputs[2].value) || 0;
+    const exam = parseFloat(inputs[3].value) || 0;
+    const total = homework * 0.2 + test * 0.3 + exam * 0.5;
+    const grade = getGrade(total);
+    r.querySelector(".totalCell").textContent = total.toFixed(2);
+    r.querySelector(".gradeCell").textContent = grade;
+    totalScore += total;
+    subjectTotal++;
+  });
+
+  const avg = totalScore / subjectTotal;
+  document.getElementById("averageDisplay").textContent = `Average: ${avg.toFixed(2)}%`;
+  document.getElementById("gradeDisplay").textContent = `Overall Grade: ${getGrade(avg)}`;
+  document.getElementById("autoComment").textContent = generateAutoComment(avg);
+  document.getElementById("outputSection").classList.remove("hidden");
+}
+
+function getGrade(score) {
+  if (score >= 85) return "A";
+  if (score >= 70) return "B";
+  if (score >= 50) return "C";
+  if (score >= 40) return "D";
+  return "F";
+}
+
+function generateAutoComment(avg) {
+  if (avg >= 85) return "Excellent performance! Keep it up.";
+  if (avg >= 70) return "Good work! Continue improving.";
+  if (avg >= 50) return "Average result. Needs more effort.";
+  return "Below expectation. More dedication needed.";
+}
+
+const teacherComment = document.getElementById("teacherComment");
+const charCount = document.getElementById("charCount");
+teacherComment.addEventListener("input", () => {
+  charCount.textContent = `${teacherComment.value.length} / 3000`;
+});
+
+async function exportPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  const name = document.getElementById("studentName").value || "N/A";
+  const cls = document.getElementById("studentClass").value || "N/A";
+  const term = document.getElementById("studentTerm").value || "N/A";
+  const avgText = document.getElementById("averageDisplay").textContent;
+  const gradeText = document.getElementById("gradeDisplay").textContent;
+  const autoC = document.getElementById("autoComment").textContent;
+  const customC = teacherComment.value;
+
+  let y = 10;
+  doc.setFontSize(14);
+  doc.text("Smart Result Calculator (Pro)", 10, y);
+  y += 10;
+  doc.setFontSize(11);
+  doc.text(`Name: ${name}`, 10, y); y += 6;
+  doc.text(`Class: ${cls}`, 10, y); y += 6;
+  doc.text(`Term: ${term}`, 10, y); y += 10;
+
+  const headers = ["Subject", "Homework", "Test", "Exam", "Total", "Grade"];
+  const rows = [];
+  document.querySelectorAll("#tableBody tr").forEach(r => {
+    const d = r.querySelectorAll("input");
+    rows.push([
+      d[0].value, d[1].value, d[2].value, d[3].value,
+      r.querySelector(".totalCell").textContent,
+      r.querySelector(".gradeCell").textContent
+    ]);
+  });
+
+  doc.autoTable({ head: [headers], body: rows, startY: y, theme: "grid" });
+
+  y = doc.lastAutoTable.finalY + 10;
+  doc.text(avgText, 10, y); y += 6;
+  doc.text(gradeText, 10, y); y += 10;
+  doc.text("Auto Comment:", 10, y); y += 6;
+  doc.text(autoC, 10, y); y += 10;
+  doc.text("Teacher's Comment:", 10, y); y += 6;
+  doc.text(customC || "None", 10, y);
+
+  doc.save(`${name.replace(/\s+/g, "_")}_Result.pdf`);
+}
+</script>
+</body>
+</html>

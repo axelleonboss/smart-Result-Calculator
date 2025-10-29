@@ -50,20 +50,6 @@
     transform: scale(1.05);
   }
 
-  /* 🌍 Language selector */
-  #languageSelect {
-    padding: 6px;
-    border-radius: 8px;
-    background: #001f3f;
-    color: #f0c808;
-    border: none;
-  }
-  .lang-container {
-    position: absolute;
-    top: 15px;
-    right: 160px;
-  }
-
   main {
     max-width: 900px;
     margin: 20px auto;
@@ -195,67 +181,200 @@
     <li>🧠 Provides Auto Grades & Teacher Comments</li>
     <li>📄 Export Results to PDF (Pro Version)</li>
   </ul>
-  <button onclick="startApp()">🚀 Get Started</button>
+  <button id="startBtn">🚀 Get Started</button>
 </div>
 
 <!-- 🌍 MAIN APP -->
-<header>
+<header id="mainHeader" class="hidden">
   Smart Result Calculator
-  <button id="backHomeBtn" onclick="goHome()">🏠 Home</button> 
+  <button id="backHomeBtn">🏠 Home</button> 
   <button onclick="window.location.href='about.html'">ℹ️ About</button>
   <button onclick="window.location.href='contact.html'">📞 Contact</button>
-
-  <!-- 🌍 Language Selector -->
-  <div class="lang-container">
-    <select id="languageSelect" onchange="changeLanguage()">
-      <option value="en">English</option>
-      <option value="fr">Français</option>
-      <option value="es">Español</option>
-      <option value="ig">Igbo</option>
-      <option value="ha">Hausa</option>
-      <option value="de">Deutsch (German)</option>
-    </select>
-  </div>
 </header>
 
 <main id="mainApp" class="hidden">
-  <!-- your main app content remains unchanged -->
-  <!-- (same as your original) -->
+  <div class="info">
+    <label>Enter Pro Unlock Code:</label>
+    <input type="text" id="unlockCode" placeholder="Enter code to unlock Pro features" />
+    <button id="unlockBtn">Unlock</button>
+    <p id="unlockMessage"></p>
+  </div>
+
+  <div class="student-info">
+    <h3>🧒 Student Information</h3>
+    <label>Name:</label>
+    <input type="text" id="studentName" placeholder="Enter student's full name" required>
+    <label>Class:</label>
+    <input type="text" id="studentClass" placeholder="e.g. JSS 2 or Grade 5">
+    <label>Term / Session:</label>
+    <input type="text" id="studentTerm" placeholder="e.g. 1st Term 2025">
+  </div>
+
+  <div id="subjectSection">
+    <h3>📘 Subjects</h3>
+    <table id="subjectTable">
+      <thead>
+        <tr>
+          <th>Subject</th>
+          <th>Homework (20%)</th>
+          <th>Test (30%)</th>
+          <th>Exam (50%)</th>
+          <th>Total %</th>
+          <th>Grade</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <button id="addSubBtn">+ Add Subject</button>
+    <button id="calcBtn">Calculate</button>
+  </div>
+
+  <div id="outputSection" class="hidden">
+    <h3>📊 Result Summary</h3>
+    <p id="averageDisplay"></p>
+    <p id="gradeDisplay"></p>
+    <p id="autoComment"></p>
+
+    <div class="comment-section">
+      <label for="teacherComment">✍️ Enter your own comment (optional):</label>
+      <textarea id="teacherComment" maxlength="3000" placeholder="Type your comment..."></textarea>
+      <small id="charCount">0 / 3000</small>
+    </div>
+
+    <button id="exportBtn" class="hidden">📄 Export PDF</button>
+  </div>
 </main>
 
 <script>
 let isPro = false;
-let freeUses = 3;
 let subjectCount = 0;
 
-function changeLanguage() {
-  const lang = document.getElementById("languageSelect").value;
-  let message = "";
+// 🌊 Navigation
+document.getElementById("startBtn").addEventListener("click", () => {
+  document.getElementById("introPage").classList.add("hidden");
+  document.getElementById("mainApp").classList.remove("hidden");
+  document.getElementById("mainHeader").classList.remove("hidden");
+});
 
-  switch (lang) {
-    case "fr": message = "🔤 Langue changée en Français (Mode Démo)"; break;
-    case "es": message = "🔤 Idioma cambiado a Español (Modo de demostración)"; break;
-    case "ig": message = "🔤 Asụsụ agbanweela na Igbo (Ụdị Nlele)"; break;
-    case "ha": message = "🔤 Harshe ya canza zuwa Hausa (Yanayin Nuna)"; break;
-    case "de": message = "🔤 Sprache auf Deutsch geändert (Demo-Modus)"; break;
-    default: message = "🔤 Language set to English";
-  }
-
-  alert(message);
-}
-
-function startApp() {
-  const intro = document.getElementById("introPage");
-  intro.classList.add("hidden");
-  setTimeout(() => document.getElementById("mainApp").classList.remove("hidden"), 1000);
-}
-
-function goHome() {
+document.getElementById("backHomeBtn").addEventListener("click", () => {
   document.getElementById("mainApp").classList.add("hidden");
+  document.getElementById("mainHeader").classList.add("hidden");
   document.getElementById("introPage").classList.remove("hidden");
+});
+
+// 🌟 Unlock Pro
+document.getElementById("unlockBtn").addEventListener("click", () => {
+  const code = document.getElementById("unlockCode").value.trim();
+  const msg = document.getElementById("unlockMessage");
+  if (code === "Chinedu2020@@") {
+    isPro = true;
+    msg.textContent = "✅ Pro version unlocked!";
+    msg.style.color = "lightgreen";
+    document.getElementById("exportBtn").classList.remove("hidden");
+  } else {
+    msg.textContent = "❌ Invalid code.";
+    msg.style.color = "red";
+  }
+});
+
+// ➕ Add subject
+document.getElementById("addSubBtn").addEventListener("click", () => {
+  if (!isPro && subjectCount >= 5) return alert("Free version limited to 5 subjects.");
+  const tbody = document.getElementById("tableBody");
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td><input type="text" placeholder="Subject"></td>
+    <td><input type="number" min="0" max="100"></td>
+    <td><input type="number" min="0" max="100"></td>
+    <td><input type="number" min="0" max="100"></td>
+    <td class="totalCell"></td>
+    <td class="gradeCell"></td>`;
+  tbody.appendChild(row);
+  subjectCount++;
+});
+
+// 🧮 Calculate
+document.getElementById("calcBtn").addEventListener("click", () => {
+  const rows = document.querySelectorAll("#tableBody tr");
+  if (rows.length === 0) return alert("Add at least one subject.");
+
+  let totalScore = 0;
+  rows.forEach(r => {
+    const inputs = r.querySelectorAll("input");
+    const h = parseFloat(inputs[1].value) || 0;
+    const t = parseFloat(inputs[2].value) || 0;
+    const e = parseFloat(inputs[3].value) || 0;
+    const total = h * 0.2 + t * 0.3 + e * 0.5;
+    const grade = getGrade(total);
+    r.querySelector(".totalCell").textContent = total.toFixed(2);
+    r.querySelector(".gradeCell").textContent = grade;
+    totalScore += total;
+  });
+
+  const avg = totalScore / rows.length;
+  document.getElementById("averageDisplay").textContent = `Average: ${avg.toFixed(2)}%`;
+  document.getElementById("gradeDisplay").textContent = `Overall Grade: ${getGrade(avg)}`;
+  document.getElementById("autoComment").textContent = autoComment(avg);
+  document.getElementById("outputSection").classList.remove("hidden");
+});
+
+function getGrade(s) {
+  if (s >= 85) return "A";
+  if (s >= 70) return "B";
+  if (s >= 50) return "C";
+  if (s >= 40) return "D";
+  return "F";
+}
+function autoComment(avg) {
+  if (avg >= 85) return "Excellent performance!";
+  if (avg >= 70) return "Good work!";
+  if (avg >= 50) return "Average. Keep improving.";
+  return "Needs improvement.";
 }
 
-// your unlockPro, addSubject, calculateResult, etc. remain as they are
+// ✍️ Character counter
+const commentBox = document.getElementById("teacherComment");
+const charCount = document.getElementById("charCount");
+commentBox.addEventListener("input", () => {
+  charCount.textContent = `${commentBox.value.length} / 3000`;
+});
+
+// 📄 Export PDF
+document.getElementById("exportBtn").addEventListener("click", () => {
+  if (!isPro) return alert("Unlock Pro to use this feature.");
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const name = document.getElementById("studentName").value || "N/A";
+  const cls = document.getElementById("studentClass").value || "N/A";
+  const term = document.getElementById("studentTerm").value || "N/A";
+  const avg = document.getElementById("averageDisplay").textContent;
+  const grade = document.getElementById("gradeDisplay").textContent;
+  const auto = document.getElementById("autoComment").textContent;
+  const custom = commentBox.value;
+
+  doc.text("Smart Result Calculator (Pro)", 10, 10);
+  doc.text(`Name: ${name}`, 10, 20);
+  doc.text(`Class: ${cls}`, 10, 26);
+  doc.text(`Term: ${term}`, 10, 32);
+
+  const headers = ["Subject", "Homework", "Test", "Exam", "Total", "Grade"];
+  const rows = [];
+  document.querySelectorAll("#tableBody tr").forEach(r => {
+    const d = r.querySelectorAll("input");
+    rows.push([
+      d[0].value, d[1].value, d[2].value, d[3].value,
+      r.querySelector(".totalCell").textContent,
+      r.querySelector(".gradeCell").textContent
+    ]);
+  });
+  doc.autoTable({ head: [headers], body: rows, startY: 40 });
+  let y = doc.lastAutoTable.finalY + 10;
+  doc.text(avg, 10, y); y += 6;
+  doc.text(grade, 10, y); y += 6;
+  doc.text("Auto Comment: " + auto, 10, y + 6);
+  doc.text("Teacher Comment: " + (custom || "None"), 10, y + 12);
+  doc.save(`${name}_Result.pdf`);
+});
 </script>
 </body>
 </html>

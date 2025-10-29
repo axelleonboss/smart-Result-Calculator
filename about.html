@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About - Smart Result Calculator</title>
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background-color: #000814;
+    color: #f0c808;
+    margin: 0; padding: 0;
+  }
+
+  header {
+    background-color: #001f3f;
+    padding: 15px;
+    text-align: center;
+    font-size: 1.6em;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: #f0c808;
+    text-shadow: 0 0 10px #f0c808;
+  }
+
+  main {
+    max-width: 800px;
+    margin: 40px auto;
+    background-color: #111;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px #f0c80833;
+    line-height: 1.8;
+  }
+
+  h2 {
+    color: #ffd700;
+    border-left: 5px solid #f0c808;
+    padding-left: 10px;
+    text-transform: uppercase;
+  }
+
+  p {
+    color: #ddd;
+    margin-top: 10px;
+    font-size: 1.1em;
+  }
+
+  ul {
+    color: #ccc;
+    margin-top: 15px;
+  }
+
+  li {
+    margin: 8px 0;
+  }
+
+  button {
+    display: block;
+    margin: 30px auto 0 auto;
+    background-color: #f0c808;
+    color: #001f3f;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 25px;
+    font-weight: bold;
+    font-size: 1em;
+    cursor: pointer;
+    box-shadow: 0 0 10px #f0c80866;
+    transition: 0.3s ease;
+  }
+  button:hover {
+    background-color: #ffd700;
+    box-shadow: 0 0 25px #f0c808aa;
+    transform: scale(1.05);
+  }
+</style>
+</head>
+<body>
+  <header>About Smart Result Calculator</header>
+  <main>
+    <h2>Overview</h2>
+    <p>
+      Smart Result Calculator is an intelligent tool built to simplify the process of computing student performance in schools.
+      It ensures accuracy, fairness, and speed in result compilation, following standardized assessment rules.
+    </p>
+
+    <h2>Features</h2>
+    <ul>
+      <li>Calculates Homework (20%), Test (30%), and Examination (50%) automatically.</li>
+      <li>Allows teachers to input their own comments (up to 3000 words).</li>
+      <li>Supports free and paid versions with flexible subject limits.</li>
+      <li>Export final results as professional PDF reports (Pro version).</li>
+      <li>Designed with simplicity, precision, and security in mind.</li>
+    </ul>
+
+    <h2>Purpose</h2>
+    <p>
+      The purpose of Smart Result Calculator is to provide educators with a dependable digital companion that eliminates manual stress,
+      ensures fairness in grading, and promotes a smarter educational workflow.
+    </p>
+
+    <button onclick="goHome()">🏠 Back to Home</button>
+  </main>
+
+  <script>
+    function goHome() {
+      window.location.href = "index.html"; // replace index.html with your main calculator filename
+    }
+  </script>
+</body>
+</html>

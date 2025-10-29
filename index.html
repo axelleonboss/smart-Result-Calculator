@@ -16,6 +16,7 @@
     overflow-x: hidden;
   }
 
+  /* 🌊 Header */
   header {
     background-color: #001f3f;
     padding: 15px;
@@ -28,6 +29,7 @@
     position: relative;
   }
 
+  /* 🏠 Back to Home button */
   #backHomeBtn {
     position: absolute;
     right: 20px;
@@ -162,22 +164,6 @@
     background-color: #ffd700;
     box-shadow: 0 0 30px #f0c808aa;
   }
-
-  /* 🎵 Music Button */
-  #musicToggle {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #001f3f;
-    color: #f0c808;
-    border-radius: 50px;
-    padding: 10px 15px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    font-weight: bold;
-    z-index: 9999;
-  }
 </style>
 </head>
 <body>
@@ -195,25 +181,78 @@
     <li>🧠 Provides Auto Grades & Teacher Comments</li>
     <li>📄 Export Results to PDF (Pro Version)</li>
   </ul>
-  <button id="startBtn">🚀 Get Started</button>
+  <button onclick="startApp()">🚀 Get Started</button>
 </div>
-
-<!-- 🎵 Background Music -->
-<audio id="bgMusic" loop>
-  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-</audio>
-<button id="musicToggle">🔇 Music Off</button>
 
 <!-- 🌍 MAIN APP -->
 <header>
   Smart Result Calculator
-  <button id="backHomeBtn" onclick="goHome()">🏠 Home</button>
-  <button onclick="window.location.href='about.html'">ℹ️ About</button>
-  <button onclick="window.location.href='contact.html'">📞 Contact</button>
+  <bu<div style="text-align:center; margin-top:20px;">
+  <button onclick="window.location.href='about.html'" 
+  style="background-color:#f0c808; color:#001f3f; border:none; padding:12px 25px; border-radius:25px; font-weight:bold; cursor:pointer; margin:5px;">
+  ℹ️ About
+  </button>
+
+  <button onclick="window.location.href='contact.html'" 
+  style="background-color:#f0c808; color:#001f3f; border:none; padding:12px 25px; border-radius:25px; font-weight:bold; cursor:pointer; margin:5px;">
+  📞 Contact
+  </button>
+</div>
+tton id="backHomeBtn" onclick="goHome()">🏠 Home</button>
+ 
 </header>
 
 <main id="mainApp" class="hidden">
-  <!-- your calculator code remains unchanged -->
+  <div id="unlockProDiv" class="info">
+    <label>Enter Pro Unlock Code:</label>
+    <input type="text" id="unlockCode" placeholder="Enter code to unlock Pro features" />
+    <button onclick="unlockPro()">Unlock</button>
+    <p id="unlockMessage"></p>
+  </div>
+
+  <div class="student-info">
+    <h3>🧒 Student Information</h3>
+    <label>Name:</label>
+    <input type="text" id="studentName" placeholder="Enter student's full name" required>
+    <label>Class:</label>
+    <input type="text" id="studentClass" placeholder="e.g. JSS 2 or Grade 5">
+    <label>Term / Session:</label>
+    <input type="text" id="studentTerm" placeholder="e.g. 1st Term 2025">
+  </div>
+
+  <div id="subjectSection">
+    <h3>📘 Subjects</h3>
+    <table id="subjectTable">
+      <thead>
+        <tr>
+          <th>Subject</th>
+          <th>Homework (20%)</th>
+          <th>Test (30%)</th>
+          <th>Exam (50%)</th>
+          <th>Total %</th>
+          <th>Grade</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <button onclick="addSubject()">+ Add Subject</button>
+    <button onclick="calculateResult()">Calculate</button>
+  </div>
+
+  <div id="outputSection" class="hidden">
+    <h3>📊 Result Summary</h3>
+    <p id="averageDisplay"></p>
+    <p id="gradeDisplay"></p>
+    <p id="autoComment"></p>
+
+    <div class="comment-section">
+      <label for="teacherComment">✍️ Enter your own comment (optional):</label>
+      <textarea id="teacherComment" maxlength="3000" placeholder="Type your comment..."></textarea>
+      <small id="charCount">0 / 3000</small>
+    </div>
+
+    <button id="exportBtn" class="hidden" onclick="exportPDF()">📄 Export PDF</button>
+  </div>
 </main>
 
 <script>
@@ -221,34 +260,6 @@ let isPro = false;
 let freeUses = 3;
 let subjectCount = 0;
 
-// 🎵 Music setup
-const music = document.getElementById('bgMusic');
-const toggleBtn = document.getElementById('musicToggle');
-let playing = false;
-
-toggleBtn.addEventListener('click', () => {
-  if (playing) {
-    music.pause();
-    toggleBtn.textContent = "🔇 Music Off";
-  } else {
-    music.play();
-    toggleBtn.textContent = "🔊 Music On";
-  }
-  playing = !playing;
-});
-
-// Start app and music
-document.getElementById("startBtn").addEventListener("click", () => {
-  music.play().then(() => {
-    playing = true;
-    toggleBtn.textContent = "🔊 Music On";
-  }).catch(() => {
-    alert("Tap the 🔇 button to start music manually.");
-  });
-  startApp();
-});
-
-// Existing functions (simplified for space)
 function startApp() {
   const intro = document.getElementById("introPage");
   intro.classList.add("hidden");
@@ -261,6 +272,139 @@ function goHome() {
   document.getElementById("mainApp").classList.add("hidden");
   const intro = document.getElementById("introPage");
   intro.classList.remove("hidden");
+}
+
+function unlockPro() {
+  const code = document.getElementById("unlockCode").value.trim();
+  const msg = document.getElementById("unlockMessage");
+  if (code === "Chinedu2020@@") {
+    isPro = true;
+    msg.textContent = "✅ Pro version unlocked!";
+    msg.style.color = "lightgreen";
+    document.getElementById("exportBtn").classList.remove("hidden");
+  } else {
+    msg.textContent = "❌ Invalid code.";
+    msg.style.color = "red";
+  }
+}
+
+function addSubject() {
+  if (!isPro && subjectCount >= 5) {
+    alert("Free version limited to 5 subjects. Unlock Pro for more.");
+    return;
+  }
+  const tbody = document.getElementById("tableBody");
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td><input type="text" placeholder="Subject name"></td>
+    <td><input type="number" min="0" max="100"></td>
+    <td><input type="number" min="0" max="100"></td>
+    <td><input type="number" min="0" max="100"></td>
+    <td class="totalCell"></td>
+    <td class="gradeCell"></td>`;
+  tbody.appendChild(row);
+  subjectCount++;
+}
+
+function calculateResult() {
+  if (!isPro) {
+    if (freeUses <= 0) {
+      alert("Free limit reached. Please wait 24 hours or unlock Pro.");
+      return;
+    }
+    freeUses--;
+  }
+
+  const rows = document.querySelectorAll("#tableBody tr");
+  if (rows.length === 0) return alert("Add at least one subject.");
+
+  let totalScore = 0;
+  let subjectTotal = 0;
+
+  rows.forEach(r => {
+    const inputs = r.querySelectorAll("input");
+    const homework = parseFloat(inputs[1].value) || 0;
+    const test = parseFloat(inputs[2].value) || 0;
+    const exam = parseFloat(inputs[3].value) || 0;
+    const total = homework * 0.2 + test * 0.3 + exam * 0.5;
+    const grade = getGrade(total);
+    r.querySelector(".totalCell").textContent = total.toFixed(2);
+    r.querySelector(".gradeCell").textContent = grade;
+    totalScore += total;
+    subjectTotal++;
+  });
+
+  const avg = totalScore / subjectTotal;
+  document.getElementById("averageDisplay").textContent = `Average: ${avg.toFixed(2)}%`;
+  document.getElementById("gradeDisplay").textContent = `Overall Grade: ${getGrade(avg)}`;
+  document.getElementById("autoComment").textContent = generateAutoComment(avg);
+  document.getElementById("outputSection").classList.remove("hidden");
+}
+
+function getGrade(score) {
+  if (score >= 85) return "A";
+  if (score >= 70) return "B";
+  if (score >= 50) return "C";
+  if (score >= 40) return "D";
+  return "F";
+}
+
+function generateAutoComment(avg) {
+  if (avg >= 85) return "Excellent performance! Keep it up.";
+  if (avg >= 70) return "Good work! Continue improving.";
+  if (avg >= 50) return "Average result. Needs more effort.";
+  return "Below expectation. More dedication needed.";
+}
+
+const teacherComment = document.getElementById("teacherComment");
+const charCount = document.getElementById("charCount");
+teacherComment.addEventListener("input", () => {
+  charCount.textContent = `${teacherComment.value.length} / 3000`;
+});
+
+async function exportPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  const name = document.getElementById("studentName").value || "N/A";
+  const cls = document.getElementById("studentClass").value || "N/A";
+  const term = document.getElementById("studentTerm").value || "N/A";
+  const avgText = document.getElementById("averageDisplay").textContent;
+  const gradeText = document.getElementById("gradeDisplay").textContent;
+  const autoC = document.getElementById("autoComment").textContent;
+  const customC = teacherComment.value;
+
+  let y = 10;
+  doc.setFontSize(14);
+  doc.text("Smart Result Calculator (Pro)", 10, y);
+  y += 10;
+  doc.setFontSize(11);
+  doc.text(`Name: ${name}`, 10, y); y += 6;
+  doc.text(`Class: ${cls}`, 10, y); y += 6;
+  doc.text(`Term: ${term}`, 10, y); y += 10;
+
+  const headers = ["Subject", "Homework", "Test", "Exam", "Total", "Grade"];
+  const rows = [];
+  document.querySelectorAll("#tableBody tr").forEach(r => {
+    const d = r.querySelectorAll("input");
+    rows.push([
+      d[0].value, d[1].value, d[2].value, d[3].value,
+      r.querySelector(".totalCell").textContent,
+      r.querySelector(".gradeCell").textContent
+    ]);
+  });
+
+  doc.autoTable({ head: [headers], body: rows, startY: y, theme: "grid" });
+
+  y = doc.lastAutoTable.finalY + 10;
+  doc.text(avgText, 10, y); y += 6;
+  doc.text(gradeText, 10, y); y += 10;
+  doc.text("Auto Comment:", 10, y); y += 6;
+  doc.text(autoC, 10, y); y += 10;
+  doc.text("Teacher's Comment:", 10, y); y += 6;
+  doc.text(customC || "None", 10, y);
+
+  doc.save(`${name.replace(/\s+/g, "_")}_Result.pdf`);
 }
 </script>
 </body>

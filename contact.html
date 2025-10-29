@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Contact - Smart Result Calculator</title>
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background-color: #000814;
+    color: #f0c808;
+    margin: 0;
+    padding: 0;
+  }
+  header {
+    background: #001f3f;
+    padding: 15px;
+    text-align: center;
+    font-size: 1.7em;
+    font-weight: 600;
+    color: #f0c808;
+    text-shadow: 0 0 10px #f0c808;
+  }
+  main {
+    max-width: 700px;
+    margin: 50px auto;
+    background: #111;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 0 20px #f0c80855;
+  }
+  h2 {
+    text-align: center;
+    color: #ffd700;
+    margin-bottom: 10px;
+  }
+  p {
+    text-align: center;
+    color: #ccc;
+    margin-bottom: 30px;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  input,
+  textarea {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #222;
+    color: #f0c808;
+    font-size: 1em;
+  }
+  input:focus,
+  textarea:focus {
+    outline: 2px solid #f0c808;
+  }
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+  button {
+    background-color: #f0c808;
+    color: #001f3f;
+    border: none;
+    border-radius: 30px;
+    padding: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 15px #f0c80855;
+    transition: 0.3s;
+  }
+  button:hover {
+    background-color: #ffd700;
+    transform: scale(1.05);
+    box-shadow: 0 0 25px #f0c808aa;
+  }
+  .back-btn {
+    display: block;
+    text-align: center;
+    margin-top: 25px;
+    color: #f0c808;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  .back-btn:hover {
+    text-decoration: underline;
+  }
+  .success-message {
+    text-align: center;
+    background: #002855;
+    color: #90ee90;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 20px;
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<header>📞 Contact Smart Result Calculator</header>
+
+<main>
+  <h2>We’d Love to Hear From You</h2>
+  <p>Got questions, suggestions, or feedback? Send us a message below.</p>
+
+  <form id="contactForm" action="https://formspree.io/f/xwpwoabg" method="POST">
+    <label>Your Name:</label>
+    <input type="text" name="name" required placeholder="Enter your full name" />
+
+    <label>Your Email:</label>
+    <input type="email" name="_replyto" required placeholder="Enter your email address" />
+
+    <label>Message:</label>
+    <textarea name="message" required placeholder="Write your message..."></textarea>
+
+    <button type="submit">📤 Send Message</button>
+  </form>
+
+  <div class="success-message" id="successMsg">
+    ✅ Your message was sent successfully. Thank you!
+  </div>
+
+  <a href="index.html" class="back-btn">🏠 Back to Home</a>
+</main>
+
+<script>
+  const form = document.getElementById("contactForm");
+  const successMsg = document.getElementById("successMsg");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const data = new FormData(form);
+    const response = await fetch(form.action, {
+      method: form.method,
+      body: data,
+      headers: { Accept: "application/json" },
+    });
+    if (response.ok) {
+      form.reset();
+      successMsg.style.display = "block";
+      setTimeout(() => {
+        successMsg.style.display = "none";
+      }, 4000);
+    } else {
+      alert("❌ There was a problem sending your message. Please try again.");
+    }
+  });
+</script>
+
+</body>
+</html>
